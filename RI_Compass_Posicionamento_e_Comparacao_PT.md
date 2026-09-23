@@ -1,9 +1,9 @@
-# RI Compass no Cenário de Software para GC--MS
+# RI Compass no Cenário de Software para GC-MS
 
 ## Escopo, sobreposição com ferramentas existentes, limitações e contribuição pretendida
 
 > **Versão curta:** o RI Compass **não** pretende substituir softwares
-> de GC--MS para preprocessing, peak detection, spectral deconvolution
+> de GC-MS para preprocessing, peak detection, spectral deconvolution
 > ou alignment. Ele é um ambiente de interpretação pós-processamento
 > para dados GC--EI já processados. Seu objetivo é reunir evidências de
 > experimental retention index, EI spectral-library evidence, evidências
@@ -14,7 +14,7 @@
 
 ## 1. Por que esse posicionamento é importante
 
-O campo de software para GC--MS é maduro. Diversos programas
+O campo de software para GC-MS é maduro. Diversos programas
 estabelecidos já executam uma ou mais das seguintes tarefas:
 
 -   importação de raw data;
@@ -30,7 +30,7 @@ estabelecidos já executam uma ou mais das seguintes tarefas:
 -   compound annotation.
 
 Por isso, o RI Compass **não deve ser descrito como uma nova plataforma
-geral de processamento de GC--MS**.
+geral de processamento de GC-MS**.
 
 Seu papel pretendido começa **depois que os dados cromatográficos já
 foram processados**.
@@ -119,7 +119,7 @@ O RI Compass concentra-se em cinco tarefas relacionadas.
 ## 3.1 Experimental retention-index calculation
 
 A aplicação utiliza uma série experimental de n-alkanes para calcular
-retention indices das features de GC--MS já processadas.
+retention indices das features de GC-MS já processadas.
 
 Dependendo do modo cromatográfico, isso inclui:
 
@@ -366,7 +366,7 @@ chemical concentration, weight percentage ou molar composition**.
 
 ------------------------------------------------------------------------
 
-# 5. Comparação com softwares existentes para GC--MS
+# 5. Comparação com softwares existentes para GC-MS
 
 A comparação abaixo é deliberadamente conservadora.
 
@@ -450,7 +450,7 @@ annotation.
 
 # 6. AMDIS e o ecossistema NIST
 
-AMDIS é uma ferramenta fundamental para GC--MS e uma comparação
+AMDIS é uma ferramenta fundamental para GC-MS e uma comparação
 importante.
 
 AMDIS realiza:
@@ -510,10 +510,10 @@ discordar dos RI e library candidates.
 
 # 7. MS-DIAL
 
-MS-DIAL é outra plataforma madura, amplamente utilizada em GC--MS
+MS-DIAL é outra plataforma madura, amplamente utilizada em GC-MS
 metabolomics.
 
-Workflows publicados de GC--MS usando MS-DIAL incluem:
+Workflows publicados de GC-MS usando MS-DIAL incluem:
 
 -   peak detection;
 -   deconvolution;
@@ -561,7 +561,7 @@ pós-processamento, e não no raw-data handling.
 GNPS-GC merece discussão explícita porque constitui um precedente
 particularmente relevante.
 
-O workflow original de GC--MS do GNPS aceita:
+O workflow original de GC-MS do GNPS aceita:
 
 -   deconvoluted EI spectra em MGF;
 -   feature quantification table;
@@ -599,7 +599,7 @@ elementos.
 
 ### Distinção prática importante
 
-No momento desta comparação, o workflow documentado de GC--MS pertence à
+No momento desta comparação, o workflow documentado de GC-MS pertence à
 documentação/ecossistema do GNPS original. Não foi identificado um
 workflow GC--EI equivalente claramente exposto na interface atual do
 GNPS2.
@@ -655,7 +655,7 @@ programa seja absolutamente desprovido de qualquer função relacionada.
   ---------------------------------------------------------------------------------------------------------------------
   Capability                       RI Compass               MZmine           AMDIS/NIST          MS-DIAL      GNPS-GC\*
   ---------------------------- -------------- -------------------- -------------------- ---------------- --------------
-  Raw GC--MS processing                    No                  Yes                  Yes              Yes Yes / upstream
+  Raw GC-MS processing                    No                  Yes                  Yes              Yes Yes / upstream
                                                                                                                workflow
 
   Peak detection                           No                  Yes                  Yes              Yes Via processing
@@ -706,7 +706,7 @@ programa seja absolutamente desprovido de qualquer função relacionada.
   output                                              capabilities                          capabilities  result tables
   ---------------------------------------------------------------------------------------------------------------------
 
-\* GNPS-GC refere-se aqui ao workflow GC--MS documentado no GNPS
+\* GNPS-GC refere-se aqui ao workflow GC-MS documentado no GNPS
 original.
 
 ### Como interpretar esta tabela
@@ -733,7 +733,7 @@ implementados em múltiplos pacotes.
 
 ## EI spectral-library searching
 
-É uma estratégia central de identificação por GC--MS, amplamente
+É uma estratégia central de identificação por GC-MS, amplamente
 implementada por NIST software, AMDIS, MZmine, MS-DIAL, GNPS-GC e
 outros.
 
@@ -911,7 +911,7 @@ Essa distinção é essencial para:
 -   positional isomers;
 -   terpene families;
 -   related hydrocarbons;
--   coeluting/deconvoluted GC--MS features.
+-   coeluting/deconvoluted GC-MS features.
 
 A network é, portanto, melhor descrita como:
 
@@ -980,7 +980,7 @@ O RI Compass **não** reivindica:
 -   introduzir GC--EI molecular networking como um novo conceito.
 
 Também não reivindica que o EI rule engine atual esteja universalmente
-validado em todos os chemical spaces de GC--MS.
+validado em todos os chemical spaces de GC-MS.
 
 As fragmentation rules requerem avaliação continuada com:
 
@@ -1017,7 +1017,7 @@ deve ser desafiada com spectra de compostos que:
 1.  realmente pertençam à target class;
 2.  se pareçam com a target class, mas não pertençam a ela;
 3.  contenham common interfering fragments;
-4.  representem realistic GC--MS backgrounds;
+4.  representem realistic GC-MS backgrounds;
 5.  venham de independent datasets.
 
 Portanto, o rule engine deve atualmente ser descrito como:
@@ -1110,7 +1110,7 @@ Potential applications incluem:
 -   pyrolysis oils;
 -   essential oils;
 -   volatile natural products;
--   environmental GC--MS;
+-   environmental GC-MS;
 -   FAME profiling;
 -   derivatized metabolomics;
 -   chemical fingerprinting;
@@ -1236,7 +1236,7 @@ metodológica torna-se substancialmente mais forte.
 RI Compass atua em um campo com softwares estabelecidos e robustos.
 
 MZmine, AMDIS/NIST, MS-DIAL e o workflow original GNPS-GC já cobrem
-partes substanciais do processamento de GC--MS, retention-index
+partes substanciais do processamento de GC-MS, retention-index
 analysis, spectral-library matching e, em alguns casos, molecular
 networking.
 
@@ -1244,7 +1244,7 @@ Essa sobreposição é real e deve ser reconhecida.
 
 A contribuição pretendida do RI Compass, portanto, **não** é:
 
-> mais um pacote de GC--MS preprocessing,
+> mais um pacote de GC-MS preprocessing,
 
 e também **não** é:
 
@@ -1272,7 +1272,7 @@ para componentes individuais que já existem.
 Os seguintes recursos são particularmente relevantes para o
 posicionamento do RI Compass:
 
--   **MZmine documentation --- Untargeted GC--MS workflow**\
+-   **MZmine documentation --- Untargeted GC-MS workflow**\
     https://mzmine.github.io/mzmine_documentation/latest/workflows/gcmsworkflow/gcms-workflow.html
 
 -   **MZmine documentation --- Spectral library search**\
@@ -1287,10 +1287,10 @@ posicionamento do RI Compass:
 -   **NIST Mass Spectrometry Data Center / tools**\
     https://chemdata.nist.gov/
 
--   **GNPS documentation --- GC--MS EI Data Analysis**\
+-   **GNPS documentation --- GC-MS EI Data Analysis**\
     https://ccms-ucsd.github.io/GNPSDocumentation/gcanalysis/
 
--   **GNPS documentation --- GC--MS Library Search and Molecular
+-   **GNPS documentation --- GC-MS Library Search and Molecular
     Networking**\
     https://ccms-ucsd.github.io/GNPSDocumentation/gc-ms-library-molecular-network/
 
@@ -1305,7 +1305,7 @@ posicionamento do RI Compass:
 
 > **RI Compass deve acrescentar evidência, não esconder incerteza.**
 
-O objetivo não é fazer GC--MS annotations parecerem mais certas do que
+O objetivo não é fazer GC-MS annotations parecerem mais certas do que
 realmente são.
 
 O objetivo é tornar as evidências que as sustentam mais fáceis de
