@@ -355,7 +355,7 @@ if run_analysis:
         }
 
 result = st.session_state.get("ri_analysis_result")
-analysis_tab, chromatogram_tab, spectral_tab, mirror_tab, network_tab, report_tab = st.tabs(["RI annotations", "Chromatograms", "EI spectral search", "Mirror spectra", "Cytoscape export", "Report & manuscript"])
+analysis_tab, chromatogram_tab, spectral_tab, substructure_tab, mirror_tab, network_tab, report_tab = st.tabs(["RI annotations", "Chromatograms", "EI spectral search", "EI substructure search", "Mirror spectra", "Cytoscape export", "Report & manuscript"])
 with analysis_tab:
     if result is None:
         st.info("Configure the data and settings, then click **Run analysis** in the sidebar.")
@@ -770,6 +770,404 @@ with spectral_tab:
             st.caption("Combined score: 70% spectral cosine and 30% RI proximity when both indices exist; spectral-only hits are capped at 65 and RI conflicts at 40. It is a screening rank, not an identification probability. Identical records shared across libraries are counted once.")
     elif query_file:
         st.info("Select one or more libraries and click Run EI search.")
+
+
+
+# --- Rule-based EI substructure / chemical-class screening -----------------
+EI_CLASS_RULES = {
+    # Pyrolysis / general hydrocarbon chemistry
+    "Alkane-like": {"domain":"Pyrolysis / hydrocarbons", "diagnostic":{57:4.0,71:2.0}, "support":{43:1.0,85:1.0,99:0.7,113:0.5}, "series":[43,57,71,85,99,113], "conflict":{91:0.5,104:0.5}, "note":"Saturated aliphatic fragmentation; Δ14 alkyl-ion series."},
+    "Alkene-like": {"domain":"Pyrolysis / hydrocarbons", "diagnostic":{41:3.0,55:3.0,69:2.0}, "support":{83:1.0,97:0.7,111:0.5}, "series":[41,55,69,83,97,111], "conflict":{91:0.4}, "note":"Allylic fragmentation; Δ14 unsaturated-ion series."},
+    "Alkylbenzene-like": {"domain":"Pyrolysis / aromatics", "diagnostic":{91:5.0}, "support":{77:2.0,65:1.0,105:1.0,119:0.8}, "series":[], "conflict":{73:0.8,147:0.8}, "note":"Benzyl/tropylium-centered aromatic signature."},
+    "Styrenic-like": {"domain":"Pyrolysis / aromatics", "diagnostic":{104:5.0,77:2.0}, "support":{51:1.2,78:1.5,103:0.7}, "series":[], "conflict":{73:0.8,147:0.8}, "note":"Styrenic/aromatic C8H8-like EI pattern; not a compound identification."},
+    "Phenolic-like": {"domain":"Pyrolysis / essential oils", "diagnostic":{94:4.0}, "support":{65:1.5,66:0.8,77:1.0,107:1.0,108:1.0}, "series":[], "conflict":{73:0.5,147:0.5}, "note":"Phenol/alkylphenol-like aromatic oxygenated signature."},
+    "PAH-like": {"domain":"Pyrolysis / aromatics", "diagnostic":{128:2.5,152:2.5,178:2.5,202:2.5,228:2.5}, "support":{77:0.8,89:0.5,101:0.5}, "series":[], "conflict":{73:0.5,147:0.5}, "note":"Stable aromatic molecular-ion screen typical of condensed aromatics; candidate masses are not unique."},
+    "Carbonyl-like": {"domain":"General oxygenates", "diagnostic":{43:2.0,44:2.0,58:2.0,60:2.5}, "support":{29:0.8,31:0.8,71:0.5}, "series":[], "conflict":{}, "note":"Broad carbonyl/oxygenated screen; subclass confirmation is required."},
+
+    # Essential oils / volatile natural products
+    "Monoterpene-hydrocarbon-like": {"domain":"Essential oils", "diagnostic":{93:3.0,136:2.0}, "support":{41:0.8,53:0.7,67:1.0,69:1.0,79:1.0,81:1.0,91:0.8,105:0.7,121:1.0}, "series":[], "conflict":{73:0.8,147:0.8}, "note":"C10 terpene-hydrocarbon-like EI signature; isomer discrimination requires RI/library evidence."},
+    "Monoterpene-alcohol-like": {"domain":"Essential oils", "diagnostic":{71:1.5,93:2.0,95:2.0}, "support":{41:0.8,55:0.8,67:0.8,69:1.0,81:1.0,121:0.6}, "series":[], "conflict":{73:0.8,147:0.8}, "note":"Oxygenated monoterpene/alcohol-like screen; dehydration cannot be asserted without a plausible molecular ion."},
+    "Monoterpene-carbonyl-like": {"domain":"Essential oils", "diagnostic":{81:2.0,95:2.0,110:1.2,112:1.2}, "support":{41:0.8,55:0.8,69:1.0,84:0.8,94:0.8}, "series":[], "conflict":{73:0.8,147:0.8}, "note":"Broad monoterpene aldehyde/ketone-like screen; use RI and library spectra for subclass assignment."},
+    "Phenylpropanoid-like": {"domain":"Essential oils", "diagnostic":{77:1.8,91:1.5,103:1.2,107:1.2}, "support":{105:0.8,121:1.0,131:0.8,135:0.8,149:0.4,164:0.5}, "series":[], "conflict":{73:0.8,147:0.8}, "note":"Phenylpropanoid/benzenoid-like aromatic signature; intentionally broad."},
+    "Sesquiterpene-hydrocarbon-like": {"domain":"Essential oils", "diagnostic":{93:2.0,161:2.0,204:1.8}, "support":{41:0.6,55:0.6,67:0.7,69:0.8,79:0.7,81:0.8,91:0.8,105:0.8,119:0.8,133:1.0,147:0.6,189:0.8}, "series":[], "conflict":{73:0.7}, "note":"C15 terpene-hydrocarbon-like signature; m/z 204 is supportive only when consistent with a molecular ion."},
+    "Oxygenated-sesquiterpene-like": {"domain":"Essential oils", "diagnostic":{93:1.5,161:1.5,189:1.2}, "support":{41:0.5,55:0.6,69:0.8,81:0.8,105:0.7,119:0.8,133:0.8,147:0.5}, "series":[], "conflict":{73:0.6}, "note":"Broad oxygenated C15-terpenoid-like screen; intended for prioritization rather than identification."},
+
+    # FAME / fatty-acid profiling
+    "Saturated-FAME-like": {"domain":"FAME / fatty acids", "diagnostic":{74:4.0,87:2.5}, "support":{43:0.8,55:0.7,57:0.8,69:0.6,75:0.5,101:0.6,143:0.4}, "series":[], "conflict":{73:0.8,147:0.8}, "note":"Saturated fatty-acid methyl-ester-like EI signature; m/z 74 reflects the classic McLafferty-type ion."},
+    "Unsaturated-FAME-like": {"domain":"FAME / fatty acids", "diagnostic":{55:2.5,69:2.0,74:1.5}, "support":{41:1.0,67:1.0,79:1.0,81:1.0,83:0.8,87:0.8,97:0.7}, "series":[], "conflict":{73:0.8,147:0.8}, "note":"Unsaturated FAME-like pattern; double-bond position/isomerism is not resolved by this rule."},
+    "PUFA-FAME-like": {"domain":"FAME / fatty acids", "diagnostic":{67:2.5,79:2.5,81:2.0}, "support":{41:0.8,55:1.0,69:1.0,91:0.6,93:0.6,95:0.6,105:0.5}, "series":[], "conflict":{73:0.8,147:0.8}, "note":"Polyunsaturated-FAME-like fragmentation; requires molecular-ion/RI/library confirmation."},
+
+    # TMS-derivatized metabolomics
+    "TMS-derivative-like": {"domain":"TMS metabolomics / derivatization QC", "diagnostic":{73:4.0,147:3.0}, "support":{45:0.5,75:0.7,133:0.5,149:0.5}, "series":[], "conflict":{}, "note":"Generic trimethylsilyl-derivative signature; may also flag siloxane background, so context is essential."},
+    "TMS-organic-acid-like": {"domain":"TMS metabolomics", "diagnostic":{73:3.0,147:2.0}, "support":{117:1.3,133:0.8,189:0.7,191:0.7}, "series":[], "conflict":{207:0.5,281:0.7}, "note":"Broad TMS-derivatized organic-acid-like screen; individual metabolite assignment requires EI library and RI."},
+    "TMS-sugar-polyol-like": {"domain":"TMS metabolomics", "diagnostic":{73:2.5,147:2.0,204:2.0,217:2.0}, "support":{103:0.8,129:0.8,191:0.8,319:0.6}, "series":[], "conflict":{207:0.4,281:0.5}, "note":"Highly silylated carbohydrate/polyol-like signature; derivatization state strongly affects the spectrum."},
+    "TMS-amino-acid-like": {"domain":"TMS metabolomics", "diagnostic":{73:2.5,147:1.8}, "support":{100:0.8,116:0.8,174:1.2,218:0.8,246:0.5}, "series":[], "conflict":{207:0.4,281:0.5}, "note":"Broad TMS-amino-acid-like screen. Fragment patterns are metabolite- and derivatization-state dependent."},
+    "TMS-fatty-acid-like": {"domain":"TMS metabolomics", "diagnostic":{73:2.5,117:3.0}, "support":{75:0.8,129:0.6,145:0.5}, "series":[], "conflict":{207:0.5,281:0.7}, "note":"Fatty-acid TMS-ester-like screen; distinguish from FAME chemistry and silicone background."},
+
+    # Background / QC flags
+    "Siloxane-background-like": {"domain":"Background / QC", "diagnostic":{73:3.0,147:4.0}, "support":{207:2.5,221:1.0,281:2.5,355:1.0}, "series":[], "conflict":{}, "note":"Siloxane/background pattern; useful as a contamination or column-bleed flag."},
+    "Phthalate-like": {"domain":"Background / QC", "diagnostic":{149:5.0}, "support":{167:1.0,279:0.8,293:0.8}, "series":[], "conflict":{}, "note":"Phthalate/plasticizer-like screening flag; confirm with library match, RI and blanks."},
+}
+
+# Relational evidence augments the ion-presence rules above.
+# Ratios are expressed as (numerator m/z, denominator m/z, operator, threshold, weight, label).
+# Co-occurrence groups reward simultaneous ions; neutral losses are searched from plausible high-mass parent ions.
+EI_RELATIONAL_RULES = {
+    "Alkane-like": {"cooccur":[([43,57,71],1.2,"43/57/71 alkyl-ion cluster")], "ratios":[(57,91,">",1.5,0.8,"I57 > 1.5×I91")]},
+    "Alkene-like": {"cooccur":[([41,55,69],1.2,"41/55/69 allylic cluster")], "ratios":[(55,57,">",0.8,0.6,"I55 comparable to/exceeds I57")]},
+    "Alkylbenzene-like": {"cooccur":[([77,91],1.4,"77+91 aromatic pair")], "ratios":[(91,57,">",1.0,0.8,"I91 > I57"),(91,77,">",1.0,0.5,"I91 > I77")]},
+    "Styrenic-like": {"cooccur":[([77,104],1.5,"77+104 styrenic pair"),([51,77,104],0.8,"51/77/104 cluster")], "ratios":[(104,91,">",1.2,0.8,"I104 > 1.2×I91")]},
+    "Phenolic-like": {"cooccur":[([65,94],1.2,"65+94 phenolic pair")]},
+    "Monoterpene-hydrocarbon-like": {"cooccur":[([69,93,121],1.0,"69/93/121 terpene cluster")], "parent_masses":[(136,1.2,"plausible C10H16 molecular ion")]},
+    "Monoterpene-alcohol-like": {"cooccur":[([69,93,95],1.0,"69/93/95 oxygenated-monoterpene cluster")], "neutral_losses":[(18,0.8,"M−18 dehydration-like")], "parent_range":[136,172]},
+    "Monoterpene-carbonyl-like": {"cooccur":[([81,95],0.9,"81+95 carbonyl-terpene pair")], "parent_range":[148,170]},
+    "Phenylpropanoid-like": {"cooccur":[([77,103],0.8,"77+103 aromatic pair"),([77,107],0.8,"77+107 aromatic pair")]},
+    "Sesquiterpene-hydrocarbon-like": {"cooccur":[([93,161],0.8,"93+161 sesquiterpene pair")], "parent_masses":[(204,1.3,"plausible C15H24 molecular ion")]},
+    "Oxygenated-sesquiterpene-like": {"neutral_losses":[(18,0.7,"M−18 dehydration-like")], "parent_range":[204,240]},
+    "Saturated-FAME-like": {"cooccur":[([74,87],1.6,"74+87 FAME pair")], "ratios":[(74,73,">",1.0,0.8,"I74 > I73")], "homologous_parent_step":14},
+    "Unsaturated-FAME-like": {"cooccur":[([55,69,74],1.0,"55/69/74 unsaturated-FAME cluster")], "ratios":[(55,57,">",1.0,0.5,"I55 > I57")]},
+    "PUFA-FAME-like": {"cooccur":[([67,79,81],1.4,"67/79/81 PUFA cluster")], "ratios":[(79,74,">",0.5,0.5,"I79 substantial relative to I74")]},
+    "TMS-derivative-like": {"cooccur":[([73,147],1.5,"73+147 TMS pair")], "neutral_losses":[(15,0.5,"M−15 methyl loss-like")]},
+    "TMS-organic-acid-like": {"cooccur":[([73,147,117],1.2,"73/117/147 TMS-acid cluster")]},
+    "TMS-sugar-polyol-like": {"cooccur":[([73,147,204,217],1.8,"73/147/204/217 polyol cluster")], "ratios":[(204,207,">",0.5,0.4,"m/z 204 not dominated by siloxane 207")]},
+    "TMS-amino-acid-like": {"cooccur":[([73,147,174],1.0,"73/147/174 amino-acid cluster")]},
+    "TMS-fatty-acid-like": {"cooccur":[([73,117],1.4,"73+117 TMS-fatty-acid pair")]},
+    "Siloxane-background-like": {"cooccur":[([73,147,207],1.8,"73/147/207 siloxane cluster"),([73,147,281],1.8,"73/147/281 siloxane cluster")], "ratios":[(147,117,">",1.0,0.4,"siloxane 147 dominates acid-like 117")]},
+    "Phthalate-like": {"cooccur":[([149,167],1.0,"149+167 phthalate pair")]},
+}
+
+
+def _nominal_profile(peaks, mass_tolerance=0.5):
+    """Return base-peak-normalized intensity (%) at nominal integer masses."""
+    if not peaks:
+        return {}
+    base = max(float(i) for _, i in peaks)
+    if base <= 0:
+        return {}
+    profile = {}
+    for target in range(1, 1001):
+        vals = [float(i) for m, i in peaks if abs(float(m) - target) <= mass_tolerance]
+        if vals:
+            profile[target] = 100.0 * max(vals) / base
+    return profile
+
+
+def _relation_score(prof, class_name, min_rel=5.0):
+    rel = EI_RELATIONAL_RULES.get(class_name, {})
+    points = 0.0
+    max_points = 0.0
+    hits = []
+    for ions, weight, label in rel.get("cooccur", []):
+        max_points += weight
+        if all(prof.get(int(m), 0.0) >= min_rel for m in ions):
+            points += weight
+            hits.append(label)
+    for num, den, op, threshold, weight, label in rel.get("ratios", []):
+        max_points += weight
+        a, b = prof.get(int(num), 0.0), prof.get(int(den), 0.0)
+        ok = b > 0 and ((a / b > threshold) if op == ">" else (a / b < threshold))
+        if ok and a >= min_rel:
+            points += weight
+            hits.append(f"{label} ({a/max(b,1e-9):.2f})")
+    for mass, weight, label in rel.get("parent_masses", []):
+        max_points += weight
+        if prof.get(int(mass), 0.0) >= min_rel:
+            points += weight
+            hits.append(label)
+    # Neutral-loss evidence is only evaluated from observed high-mass ions in an optional plausible parent range.
+    prange = rel.get("parent_range", [80, 600])
+    observed_parents = [m for m,i in prof.items() if prange[0] <= m <= prange[1] and i >= min_rel]
+    for loss, weight, label in rel.get("neutral_losses", []):
+        max_points += weight
+        found = any(prof.get(int(round(parent-loss)), 0.0) >= min_rel for parent in observed_parents)
+        if found:
+            points += weight
+            hits.append(label)
+    return (points / max_points if max_points else 0.0), hits
+
+
+def score_ei_rule(peaks, rule, class_name, min_rel=5.0, mass_tolerance=0.5):
+    """Heuristic evidence score (0–1), combining ion presence and relational evidence."""
+    prof = _nominal_profile(peaks, mass_tolerance)
+    positive = {**rule["diagnostic"], **rule["support"]}
+    max_positive = sum(positive.values()) or 1.0
+    evidence = 0.0
+    matched_diag, matched_support = [], []
+    for mz, weight in rule["diagnostic"].items():
+        inten = prof.get(mz, 0.0)
+        if inten >= min_rel:
+            evidence += weight * min(1.0, inten / 30.0)
+            matched_diag.append(f"{mz} ({inten:.0f}%)")
+    for mz, weight in rule["support"].items():
+        inten = prof.get(mz, 0.0)
+        if inten >= min_rel:
+            evidence += weight * min(1.0, inten / 20.0)
+            matched_support.append(f"{mz} ({inten:.0f}%)")
+    pattern_bonus = 0.0
+    if rule.get("series"):
+        n = sum(prof.get(mz, 0.0) >= min_rel for mz in rule["series"])
+        if n >= 3:
+            pattern_bonus = min(0.20, 0.04 * (n - 2))
+    conflict = 0.0
+    conflict_hits = []
+    for mz, weight in rule.get("conflict", {}).items():
+        inten = prof.get(mz, 0.0)
+        if inten >= max(20.0, min_rel):
+            conflict += weight * min(1.0, inten / 50.0)
+            conflict_hits.append(f"{mz} ({inten:.0f}%)")
+    ion_score = max(0.0, min(1.0, evidence / max_positive + pattern_bonus - 0.15 * conflict))
+    relational_score, relation_hits = _relation_score(prof, class_name, min_rel)
+    # Ion evidence remains primary; relations strengthen or weaken confidence without replacing it.
+    if class_name in EI_RELATIONAL_RULES:
+        score = max(0.0, min(1.0, 0.72 * ion_score + 0.28 * relational_score))
+    else:
+        score = ion_score
+    return score, ion_score, relational_score, matched_diag, matched_support, conflict_hits, relation_hits
+
+
+# --- Hierarchical EI classification (v4) -----------------------------------
+# Leaves retain their independent raw evidence scores. A leaf is promoted to a
+# final class only when its chemical parent gate is also supported. This avoids
+# interpreting generic fragments (e.g. 41/55/69) directly as FAME/TMS/terpenoid
+# subclasses.
+EI_HIERARCHY = {
+    "Alkane-like": ("Hydrocarbon", "Aliphatic hydrocarbon", "Alkane-like"),
+    "Alkene-like": ("Hydrocarbon", "Aliphatic hydrocarbon", "Alkene-like"),
+    "Alkylbenzene-like": ("Aromatic", "Alkylbenzene", "Alkylbenzene-like"),
+    "Styrenic-like": ("Aromatic", "Styrenic", "Styrenic-like"),
+    "PAH-like": ("Aromatic", "PAH", "PAH-like"),
+    "Phenolic-like": ("Aromatic", "Phenolic / phenylpropanoid", "Phenolic-like"),
+    "Phenylpropanoid-like": ("Aromatic", "Phenolic / phenylpropanoid", "Phenylpropanoid-like"),
+    "Carbonyl-like": ("Oxygenated", "Carbonyl", "Carbonyl-like"),
+    "Saturated-FAME-like": ("FAME", "Fatty-acid methyl ester", "Saturated-FAME-like"),
+    "Unsaturated-FAME-like": ("FAME", "Fatty-acid methyl ester", "Unsaturated-FAME-like"),
+    "PUFA-FAME-like": ("FAME", "Fatty-acid methyl ester", "PUFA-FAME-like"),
+    "TMS-derivative-like": ("TMS derivative", "Generic TMS derivative", "TMS-derivative-like"),
+    "TMS-organic-acid-like": ("TMS derivative", "TMS metabolite", "TMS-organic-acid-like"),
+    "TMS-fatty-acid-like": ("TMS derivative", "TMS metabolite", "TMS-fatty-acid-like"),
+    "TMS-amino-acid-like": ("TMS derivative", "TMS metabolite", "TMS-amino-acid-like"),
+    "TMS-sugar-polyol-like": ("TMS derivative", "TMS metabolite", "TMS-sugar-polyol-like"),
+    "Monoterpene-hydrocarbon-like": ("Terpenoid", "Monoterpene", "Monoterpene-hydrocarbon-like"),
+    "Monoterpene-alcohol-like": ("Terpenoid", "Monoterpene", "Monoterpene-alcohol-like"),
+    "Monoterpene-carbonyl-like": ("Terpenoid", "Monoterpene", "Monoterpene-carbonyl-like"),
+    "Sesquiterpene-hydrocarbon-like": ("Terpenoid", "Sesquiterpene", "Sesquiterpene-hydrocarbon-like"),
+    "Oxygenated-sesquiterpene-like": ("Terpenoid", "Sesquiterpene", "Oxygenated-sesquiterpene-like"),
+    "Siloxane-background-like": ("Background / QC", "Siloxane", "Siloxane-background-like"),
+    "Phthalate-like": ("Background / QC", "Plasticizer", "Phthalate-like"),
+}
+
+
+def _gate_scores(peaks, min_rel=5.0, mass_tolerance=0.5):
+    """Independent parent-level chemical gates; values are heuristic evidence scores 0–1."""
+    p = _nominal_profile(peaks, mass_tolerance)
+    I = lambda m: p.get(int(m), 0.0)
+    present = lambda m, t=min_rel: I(m) >= t
+
+    # Hydrocarbon gate: require a coherent alkyl/allylic cluster, not one isolated ion.
+    alkyl = sum(present(m) for m in (41,43,55,57,69,71,83,85)) / 8.0
+    hydro = min(1.0, 0.35 + 0.9 * alkyl) if alkyl >= 0.375 else 0.25 * alkyl
+
+    # Aromatic gate: aromatic fragments or stable aromatic molecular-ion region.
+    arom_n = sum(present(m) for m in (65,77,91,103,104,105))
+    aromatic = min(1.0, 0.18 * arom_n + (0.28 if present(77) else 0) + (0.28 if present(91) else 0))
+    if any(present(m) for m in (128,152,178,202,228)):
+        aromatic = min(1.0, aromatic + 0.30)
+
+    # FAME gate deliberately requires ester/FAME evidence before unsaturation subclasses.
+    fame = 0.0
+    if present(74): fame += 0.45
+    if present(87): fame += 0.25
+    if present(74) and present(87): fame += 0.20
+    if any(present(m) for m in (101,115,129,143)): fame += 0.10
+    # Strong TMS evidence argues against interpreting the same spectrum as a FAME.
+    if present(73, 20) and present(147, 15): fame *= 0.55
+    fame = min(1.0, fame)
+
+    # TMS gate requires the 73/147 pair and penalizes a clear siloxane series.
+    tms = 0.0
+    if present(73): tms += 0.45
+    if present(147): tms += 0.35
+    if present(73) and present(147): tms += 0.20
+    silox = present(207, 10) or present(281, 10) or present(355, 10)
+    if silox: tms *= 0.55
+    tms = min(1.0, tms)
+
+    # Terpenoid gate: common terpene fragments plus C10/C15 molecular-ion context.
+    terp_core = sum(present(m) for m in (67,69,79,81,93,105,121,133,161))
+    terp = min(0.65, terp_core * 0.075)
+    if present(136): terp += 0.25
+    if present(204): terp += 0.30
+    if present(93) and (present(121) or present(161)): terp += 0.15
+    terp = min(1.0, terp)
+
+    oxygenated = min(1.0, 0.25 * sum(present(m) for m in (29,31,43,44,58,60,71,95)))
+    background = min(1.0, max(
+        1.0 if (present(73) and present(147) and (present(207) or present(281))) else 0.0,
+        0.75 if present(149, 20) else 0.0,
+    ))
+    return {
+        "Hydrocarbon": hydro, "Aromatic": aromatic, "FAME": fame,
+        "TMS derivative": tms, "Terpenoid": terp, "Oxygenated": oxygenated,
+        "Background / QC": background,
+    }
+
+
+def classify_ei_spectra(raw, filename, min_rel, mass_tolerance, gate_threshold=0.45):
+    spectra = parse_ei_library(raw, filename)
+    rows = []
+    for sp in spectra:
+        gates = _gate_scores(sp["peaks"], min_rel, mass_tolerance)
+        for class_name, rule in EI_CLASS_RULES.items():
+            raw_score, ion_score, relational_score, diag, support, conflicts, relations = score_ei_rule(
+                sp["peaks"], rule, class_name, min_rel, mass_tolerance)
+            superclass, class_group, leaf = EI_HIERARCHY.get(class_name, ("Other", rule.get("domain", "General"), class_name))
+            gate_score = float(gates.get(superclass, 1.0))
+            gate_pass = gate_score >= gate_threshold or superclass == "Background / QC"
+            # Preserve raw evidence but only promote a final score through a supported parent gate.
+            final_score = raw_score * (0.55 + 0.45 * gate_score) if gate_pass else 0.0
+            final_score = max(0.0, min(1.0, final_score))
+            rows.append({
+                "feature_id": sp["scan"],
+                "query_rt_min": pd.to_numeric(sp.get("rt_seconds", ""), errors="coerce") / 60,
+                "superclass": superclass, "class_group": class_group,
+                "domain": rule.get("domain", "General"), "class_signature": class_name,
+                "raw_score": round(raw_score, 3), "gate_score": round(gate_score, 3),
+                "gate_pass": bool(gate_pass), "score": round(final_score, 3),
+                "ion_score": round(ion_score, 3), "relational_score": round(relational_score, 3),
+                "evidence": "strong" if final_score >= 0.80 else "probable" if final_score >= 0.60 else "possible" if final_score >= 0.30 else "weak / none",
+                "diagnostic_ions": "; ".join(diag), "supporting_ions": "; ".join(support),
+                "relational_evidence": "; ".join(relations), "conflicting_ions": "; ".join(conflicts),
+                "interpretation": rule["note"],
+            })
+    out = pd.DataFrame(rows)
+    if out.empty:
+        return out
+    out = out.sort_values(["feature_id", "score", "raw_score"], ascending=[True, False, False], kind="stable")
+    out["class_rank"] = out.groupby("feature_id").cumcount() + 1
+    # Unique conservative leaf assignment; zero-score rows remain unclassified.
+    best = out.groupby("feature_id", sort=False).head(1)[["feature_id", "class_signature", "superclass", "class_group", "score"]].copy()
+    best.loc[best["score"] <= 0, ["class_signature", "superclass", "class_group"]] = "Unclassified"
+    best = best.rename(columns={"class_signature":"best_leaf_class", "superclass":"best_superclass", "class_group":"best_class_group", "score":"best_leaf_score"})
+    return out.merge(best, on="feature_id", how="left", validate="many_to_one")
+
+
+def _sunburst_table(class_table, threshold=0.60, mode="Best leaf only"):
+    """Build hierarchy table without double counting in Best leaf mode."""
+    if mode == "Best leaf only":
+        d = class_table.groupby("feature_id", sort=False).head(1).copy()
+        d = d[d["score"] >= threshold].copy()
+    else:
+        d = class_table[(class_table["score"] >= threshold) & class_table["gate_pass"]].copy()
+    if d.empty:
+        return pd.DataFrame(columns=["superclass","class_group","class_signature","value","median_score","mean_score"])
+    return (d.groupby(["superclass","class_group","class_signature"], dropna=False)
+             .agg(value=("feature_id","nunique"), median_score=("score","median"), mean_score=("score","mean"))
+             .reset_index())
+
+
+with substructure_tab:
+    st.subheader("Rule-based EI structural-signature search · hierarchical relational engine v4")
+    st.caption("v4 preserves raw spectral signatures but promotes a subclass only after its parent chemical gate is supported. This reduces false FAME, TMS and terpenoid assignments from generic EI fragments. Scores remain screening evidence, not compound identification probabilities.")
+    with st.expander("How the hierarchical engine works", expanded=False):
+        st.markdown("""
+        **Two-stage classification.** First, independent parent gates evaluate broad chemical evidence for **Hydrocarbon, Aromatic, FAME, TMS derivative, Terpenoid, Oxygenated**, or **Background/QC** chemistry. Second, the relational leaf rules evaluate subclasses. A leaf receives a final score only when its parent gate passes.
+
+        **FAME** subclasses therefore require FAME/ester evidence before `Saturated`, `Unsaturated` or `PUFA` is promoted. **TMS metabolite** subclasses require a TMS gate, with a penalty for a siloxane-like series. **Terpenoid** subclasses require terpene-core evidence and gain support from plausible C10/C15 molecular-ion context. Raw leaf evidence is retained in `raw_score`, while `score` is the gate-adjusted final value.
+
+        `best_leaf_class` is a conservative unique assignment per feature. `all supported classes` remains available for inspecting genuine overlapping signatures. Suggested interpretation of the final score: **<0.30 weak/none · 0.30–0.59 possible · 0.60–0.79 probable · ≥0.80 strong**.
+        """)
+    if query_file is None:
+        st.info("Upload the sample MGF in the **EI spectral search** tab. The same deconvoluted spectra are reused here; a reference library is not required.")
+    else:
+        a, b, c, d = st.columns(4)
+        with a:
+            sub_min_rel = st.slider("Minimum relative ion intensity (%)", 1.0, 30.0, 5.0, 1.0, key="sub_min_rel")
+        with b:
+            sub_mass_tol = st.number_input("Nominal-ion tolerance (Da)", 0.1, 1.0, 0.5, 0.1, key="sub_mass_tol")
+        with c:
+            sub_gate = st.slider("Parent gate threshold", 0.20, 0.80, 0.45, 0.05, key="sub_gate")
+        with d:
+            sub_show = st.slider("Top class signatures per feature", 1, 12, 4, key="sub_show")
+        domains = sorted({r.get("domain", "General") for r in EI_CLASS_RULES.values()})
+        selected_domains = st.multiselect("Signature domains", domains, default=domains, key="sub_domains")
+        st.markdown("**Built-in leaf signatures:** " + " · ".join(EI_CLASS_RULES.keys()))
+        if st.button("▶ Run hierarchical EI classification", type="primary"):
+            with st.spinner("Evaluating parent gates and relational EI fragmentation rules..."):
+                class_table = classify_ei_spectra(query_file.getvalue(), query_file.name, sub_min_rel, sub_mass_tol, sub_gate)
+                st.session_state["ei_substructure_result"] = (class_table, (query_file.name, query_file.size, sub_min_rel, sub_mass_tol, sub_gate))
+        sub_result = st.session_state.get("ei_substructure_result")
+        if sub_result is not None:
+            class_table, sub_settings = sub_result
+            current_sub = (query_file.name, query_file.size, sub_min_rel, sub_mass_tol, sub_gate)
+
+            # v4 schema guard: Streamlit can preserve a v3 result in session_state
+            # after the app file is replaced/reloaded. Such a table does not contain
+            # the hierarchical columns and must not be reused as a v4 result.
+            required_v4_cols = {
+                "feature_id", "class_rank", "domain", "superclass", "class_group",
+                "class_signature", "raw_score", "gate_score", "gate_pass", "score",
+                "best_superclass", "best_class_group", "best_leaf_class", "best_leaf_score",
+            }
+            missing_v4_cols = sorted(required_v4_cols.difference(class_table.columns))
+            if missing_v4_cols:
+                st.warning(
+                    "A cached EI result from an earlier engine version was detected. "
+                    "It is being discarded; run the hierarchical EI classification again."
+                )
+                st.session_state.pop("ei_substructure_result", None)
+                class_table = None
+            elif current_sub != sub_settings:
+                st.warning("MGF or hierarchical-rule settings changed. Click Run hierarchical EI classification to update the results.")
+
+        if sub_result is not None and class_table is not None:
+            display = class_table[(class_table["class_rank"] <= sub_show) & (class_table["domain"].isin(selected_domains))].copy()
+            st.dataframe(display, hide_index=True, use_container_width=True)
+            st.download_button("Download hierarchical EI signatures (CSV)", class_table.to_csv(index=False).encode("utf-8-sig"),
+                               file_name="RI_Compass_EI_hierarchical_signatures.csv", mime="text/csv")
+            matrix = class_table.pivot(index="feature_id", columns="class_signature", values="score").reset_index()
+            st.download_button("Download gated feature × class score matrix (CSV)", matrix.to_csv(index=False).encode("utf-8-sig"),
+                               file_name="RI_Compass_EI_hierarchical_score_matrix.csv", mime="text/csv")
+
+            best_cols = ["feature_id","query_rt_min","best_superclass","best_class_group","best_leaf_class","best_leaf_score"]
+            # One row per feature; hierarchical best columns are propagated to every
+            # class row by classify_ei_spectra(), so drop_duplicates is sufficient.
+            best_table = class_table[best_cols].drop_duplicates(subset=["feature_id"], keep="first").copy()
+            st.download_button("Download best hierarchical class per feature (CSV)", best_table.to_csv(index=False).encode("utf-8-sig"),
+                               file_name="RI_Compass_EI_best_hierarchical_class.csv", mime="text/csv")
+
+            strong = class_table[(class_table["score"] >= 0.60) & class_table["gate_pass"]]
+            if not strong.empty:
+                counts = strong.groupby(["superclass","class_signature"])["feature_id"].nunique().sort_values(ascending=False).rename("features_score_ge_0.60").reset_index()
+                st.markdown("**Hierarchical class summary (final score ≥ 0.60)**")
+                st.dataframe(counts, hide_index=True, use_container_width=True)
+
+            st.divider()
+            st.markdown("### Interactive chemical-class Sunburst")
+            s1, s2 = st.columns(2)
+            with s1:
+                sun_threshold = st.slider("Sunburst minimum final score", 0.30, 0.95, 0.60, 0.05, key="sun_threshold")
+            with s2:
+                sun_mode = st.selectbox("Sunburst assignment", ["Best leaf only", "All supported classes"], key="sun_mode",
+                                        help="Best leaf avoids double counting. All supported classes visualizes overlapping EI signatures.")
+            sun = _sunburst_table(class_table, sun_threshold, sun_mode)
+            if sun.empty:
+                st.info("No hierarchical classes pass the selected Sunburst threshold.")
+            else:
+                import plotly.express as px
+                fig = px.sunburst(
+                    sun, path=["superclass","class_group","class_signature"], values="value",
+                    custom_data=["median_score","mean_score"],
+                    title=f"EI chemical-class hierarchy · {sun_mode} · score ≥ {sun_threshold:.2f}",
+                )
+                fig.update_traces(hovertemplate="<b>%{label}</b><br>Features: %{value}<br>Median score: %{customdata[0]:.3f}<br>Mean score: %{customdata[1]:.3f}<extra></extra>")
+                fig.update_layout(margin=dict(t=55,l=10,r=10,b=10), height=680)
+                st.plotly_chart(fig, use_container_width=True)
+                html = fig.to_html(full_html=True, include_plotlyjs=True, config={"responsive": True})
+                st.download_button("Download interactive Sunburst (.html)", html.encode("utf-8"),
+                                   file_name="RI_Compass_EI_hierarchical_sunburst.html", mime="text/html")
+                st.download_button("Download Sunburst data (CSV)", sun.to_csv(index=False).encode("utf-8-sig"),
+                                   file_name="RI_Compass_EI_hierarchical_sunburst_data.csv", mime="text/csv")
+            st.caption("The Sunburst uses gate-adjusted class scores. 'Best leaf only' is recommended for composition summaries because each feature contributes once; 'All supported classes' is intended for overlap/exploratory inspection.")
 
 
 @st.cache_data(show_spinner=False, max_entries=5)
