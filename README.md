@@ -4,7 +4,7 @@
 chemical-class screening, Cytoscape export, and report-ready output**
 
 RI Compass is a Streamlit application designed to combine several
-complementary sources of evidence from GC--MS data without treating any
+complementary sources of evidence from GC-MS data without treating any
 single source as definitive compound identification.
 
 The workflow brings together:
@@ -33,7 +33,7 @@ and authentic standards whenever available.
 
 ## 1. What problem does RI Compass solve?
 
-Routine GC--MS interpretation often produces several disconnected
+Routine GC-MS interpretation often produces several disconnected
 outputs:
 
 -   a chromatographic feature table;
@@ -128,7 +128,7 @@ not be treated as directly comparable.
 
 ## 3.2 Feature table CSV
 
-Upload the GC--MS feature table containing at least a feature identifier
+Upload the GC-MS feature table containing at least a feature identifier
 and retention time.
 
 Tables exported from deconvolution workflows may additionally contain
@@ -787,7 +787,7 @@ Typical node types include:
 
 ### `feature`
 
-An experimental GC--MS feature.
+An experimental GC-MS feature.
 
 Feature nodes may carry:
 
@@ -1034,7 +1034,7 @@ Use:
 Inspect whether the spectrum represents a derivatized metabolite or
 siloxane background.
 
-Common GC--MS background ions can strongly resemble
+Common GC-MS background ions can strongly resemble
 derivatization-related fragments if interpreted without a chemical gate.
 
 ------------------------------------------------------------------------
@@ -1145,7 +1145,7 @@ The following text can be adapted for manuscripts:
 
 # 28. Suggested Results wording
 
-> GC--MS features were evaluated using complementary retention and EI
+> GC-MS features were evaluated using complementary retention and EI
 > spectral evidence. Experimental retention indices were used to assess
 > chromatographic consistency with reference candidates, while EI
 > library matching provided spectrum-level similarity. The hierarchical
