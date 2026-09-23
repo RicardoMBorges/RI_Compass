@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<vizmap id="VizMap-2026_09_22-23_29" documentVersion="3.1">
+    <visualStyle name="RI Compass | EI + RI_0">
+        <network>
+            <visualProperty default="true" name="NETWORK_EDGE_SELECTION"/>
+            <visualProperty default="400.0" name="NETWORK_HEIGHT"/>
+            <visualProperty default="" name="NETWORK_TITLE"/>
+            <visualProperty default="false" name="NETWORK_ANNOTATION_SELECTION"/>
+            <visualProperty default="true" name="NETWORK_NODE_SELECTION"/>
+            <visualProperty default="0.0" name="NETWORK_CENTER_X_LOCATION"/>
+            <visualProperty default="false" name="NETWORK_NODE_LABEL_SELECTION"/>
+            <visualProperty default="0.0" name="NETWORK_CENTER_Y_LOCATION"/>
+            <visualProperty default="0.0" name="NETWORK_CENTER_Z_LOCATION"/>
+            <visualProperty default="550.0" name="NETWORK_WIDTH"/>
+            <visualProperty default="0.0" name="NETWORK_DEPTH"/>
+            <visualProperty default="1.0" name="NETWORK_SCALE_FACTOR"/>
+            <visualProperty default="#FFFFFF" name="NETWORK_BACKGROUND_PAINT"/>
+            <visualProperty default="false" name="NETWORK_FORCE_HIGH_DETAIL"/>
+        </network>
+        <node>
+            <dependency value="true" name="nodeCustomGraphicsSizeSync"/>
+            <dependency value="true" name="nodeSizeLocked"/>
+            <visualProperty default="255" name="NODE_LABEL_BACKGROUND_TRANSPARENCY"/>
+            <visualProperty default="org.cytoscape.cg.model.NullCustomGraphics,0,[ Remove Graphics ]," name="NODE_CUSTOMGRAPHICS_5"/>
+            <visualProperty default="60.0" name="NODE_WIDTH"/>
+            <visualProperty default="org.cytoscape.cg.model.NullCustomGraphics,0,[ Remove Graphics ]," name="NODE_CUSTOMGRAPHICS_7"/>
+            <visualProperty default="0.0" name="NODE_LABEL_ROTATION"/>
+            <visualProperty default="0.0" name="NODE_CUSTOMGRAPHICS_SIZE_3"/>
+            <visualProperty default="0.0" name="NODE_Z_LOCATION"/>
+            <visualProperty default="24.0" name="NODE_SIZE">
+                <discreteMapping attributeName="node_type" attributeType="string">
+                    <discreteMappingEntry attributeValue="reference" value="22.0"/>
+                    <discreteMappingEntry attributeValue="feature" value="28.0"/>
+                </discreteMapping>
+            </visualProperty>
+            <visualProperty default="0.0" name="NODE_CUSTOMGRAPHICS_SIZE_8"/>
+            <visualProperty default="org.cytoscape.cg.model.NullCustomGraphics,0,[ Remove Graphics ]," name="NODE_CUSTOMGRAPHICS_4"/>
+            <visualProperty default="0.0" name="NODE_CUSTOMGRAPHICS_SIZE_4"/>
+            <visualProperty default="#FFCC00" name="NODE_SELECTED_PAINT"/>
+            <visualProperty default="C,C,c,0.00,0.00" name="NODE_CUSTOMGRAPHICS_POSITION_1"/>
+            <visualProperty default="11" name="NODE_LABEL_FONT_SIZE"/>
+            <visualProperty default="255" name="NODE_BORDER_TRANSPARENCY"/>
+            <visualProperty default="C,C,c,0.00,0.00" name="NODE_CUSTOMGRAPHICS_POSITION_7"/>
+            <visualProperty default="C,C,c,0.00,0.00" name="NODE_CUSTOMGRAPHICS_POSITION_8"/>
+            <visualProperty default="10.0" name="COMPOUND_NODE_PADDING"/>
+            <visualProperty default="ELLIPSE" name="NODE_SHAPE">
+                <discreteMapping attributeName="node_type" attributeType="string">
+                    <discreteMappingEntry attributeValue="reference" value="DIAMOND"/>
+                    <discreteMappingEntry attributeValue="feature" value="ELLIPSE"/>
+                </discreteMapping>
+            </visualProperty>
+            <visualProperty default="#AAB4C2" name="NODE_FILL_COLOR">
+                <discreteMapping attributeName="node_type" attributeType="string">
+                    <discreteMappingEntry attributeValue="reference" value="#365DA8"/>
+                    <discreteMappingEntry attributeValue="feature" value="#168A8A"/>
+                </discreteMapping>
+            </visualProperty>
+            <visualProperty default="true" name="NODE_VISIBLE"/>
+            <visualProperty default="#D7301F" name="NODE_BORDER_PAINT"/>
+            <visualProperty default="#B6B6B6" name="NODE_LABEL_BACKGROUND_COLOR"/>
+            <visualProperty default="0.0" name="NODE_CUSTOMGRAPHICS_SIZE_9"/>
+            <visualProperty default="org.cytoscape.cg.model.NullCustomGraphics,0,[ Remove Graphics ]," name="NODE_CUSTOMGRAPHICS_2"/>
+            <visualProperty default="#253244" name="NODE_LABEL_COLOR"/>
+            <visualProperty default="true" name="NODE_NESTED_NETWORK_IMAGE_VISIBLE"/>
+            <visualProperty default="SOLID" name="NODE_BORDER_STROKE"/>
+            <visualProperty default="0.0" name="NODE_X_LOCATION"/>
+            <visualProperty default="SansSerif.plain,plain,12" name="NODE_LABEL_FONT_FACE"/>
+            <visualProperty default="0.0" name="NODE_CUSTOMGRAPHICS_SIZE_2"/>
+            <visualProperty default="0.0" name="NODE_BORDER_WIDTH">
+                <discreteMapping attributeName="compound_name" attributeType="string">
+                    <discreteMappingEntry attributeValue="Benzoic acid" value="7.0"/>
+                    <discreteMappingEntry attributeValue="p-tert-Butylphenol" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8,10,12,14,16,18,20,22,24,26,28-Tetradecamethyl-1,28-nonacosadiene (isomer)" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6-Triethyl-1-decene (isomer 1)" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Dodecane" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8-Tetramethyl-1-undecene (isomer 2)" value="7.0"/>
+                    <discreteMappingEntry attributeValue="But-3-enyl benzoate" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Hexadecane" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2-Ethyl-1-hexene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="3-Methylindene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="C11H24" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1,15-Hexadecadiene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="C11H22" value="7.0"/>
+                    <discreteMappingEntry attributeValue="p-Isopropylphenol" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6-Triethyl-1-decene (isomer 2)" value="7.0"/>
+                    <discreteMappingEntry attributeValue="6-Hydroxyhexanoic acid" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1,21-Docosadiene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1-Hexene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8-Tetramethyl-1-undecene (isomer 3)" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Heptane" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Phenol" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Naphthalene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Styrene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8,10,12-Hexamethyl-1-pentadecene (isomer 1)" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8,10-Pentaethyl-1-tetradecene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1-Dodecene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8,10,12,14,16-Octamethyl-1,16-heptadecadiene (isomer)" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8,10,12-Hexaethyl-1-hexadecene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1,22-Tricosadiene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="p-Vinylphenol" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2-Ethylhexane" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Tricosane" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6-Trimethyl-1-nonene (isomer 1)" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8,10,12,14,16,18,20,22,24,26,28,30-Pentadecamethyl-1,30-hentriacontadiene (isomer)" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4-Diethyl-6-methyl-1-octene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="p-Isopropenylphenol" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8,10,12-Hexamethyl-1-pentadecene (isomer 2)" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1,13-Tetradecadiene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1-Decanenitrile" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Nonane" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Tetradecane" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1-Heneicosene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8,10,12,14,16,18,20,22-Undecamethyl-1,22-tricosadiene (isomer)" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1-Pentadecene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Tridecane" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1-Amino-11-cyanoundecane" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8,10,12-Hexamethyl-1,12-tridecadiene (isomer)" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4-Diphenyl-1-butene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6-Trimethyl-1-nonene (isomer 2)" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Decane" value="7.0"/>
+                    <discreteMappingEntry attributeValue="p-Ethylphenol" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1-Tridecene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Indene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32-Hexadecamethyl-1,32-tritriacontadiene (isomer)" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8,10,12,14-Heptamethyl-1,14-pentadecadiene (isomer)" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8-Tetraethyl-1-dodecene (isomer 2)" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1,12-Tridecadiene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6-Triethyl-8-methyl-1-decene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34-Heptadecamethyl-1,34-pentatriacontadiene (isomer)" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6-Trimethyl-1-heptene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Dodecanenitrile" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1-Undecene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Nonadecane" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1-Docosene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8,10,12,14,16,18,20,22,24-Dodecamethyl-1,24-pentacosadiene (isomer)" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1-Decene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8,10,12,14,16,18,20,22,24,26-Tridecamethyl-1,26-heptacosadiene (isomer)" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4-Dimethyl-1-heptene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1,11-Dodecadiene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8-Tetraethyl-1-dodecene (isomer1)" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1-Heptene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8,10,12,14,16,18-Nonamethyl-1,18-nonadecadiene (isomer)" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Undecane" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8,10,12,14,16,18,20-Decamethyl-1,20-henicosadiene (isomer)" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Octane" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1-Eicosene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1-Nonadecene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1-Octadecene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1-Heptadecene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6-Triphenyl-1-hexene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Docosane" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8,10,12,14-Heptaethyl-1-octadecene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Heneicosane" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Pentadecane" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1-Tricosene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1,10-Undecadiene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1,14-Pentadecadiene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1,4-Butanediyl dibenzoate" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8-Tetraethyl-1,8-nonadiene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1-Tetradecene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="bis(2-(Benzoyloxy)ethyl) terephthalate" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1-Nonene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1,19-Eicosadiene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Eicosane" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Heptadecane" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1,16-Heptadecadiene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="10-Undecenenitrile" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4-Diethyl-1-octene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Toluene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8-Tetramethyl-1-undecene (isomer 1)" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Octadecane" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8,10-Pentamethyl-1-tridecene (isomer)" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Pentyl 4-pentenoate" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1-Octene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1,8,15-Trioxacyclohenicosane-2,9,16-trione" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2-Methyl-1-pentene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="2,4,6,8-Tetraethyl-10-methyl-1-dodecene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Benzene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Dodecenenitrile" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1,20-Heneicosadiene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1-Hexadecene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="Vinyl benzoate" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1,18-Nonadecadiene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="p-Cumylphenol" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1,17-Octadecadiene" value="7.0"/>
+                    <discreteMappingEntry attributeValue="1,9-Decadiene" value="7.0"/>
+                </discreteMapping>
+            </visualProperty>
+            <visualProperty default="0.0" name="NODE_CUSTOMGRAPHICS_SIZE_6"/>
+            <visualProperty default="org.cytoscape.cg.model.NullCustomGraphics,0,[ Remove Graphics ]," name="NODE_CUSTOMGRAPHICS_6"/>
+            <visualProperty default="0.0" name="NODE_DEPTH"/>
+            <visualProperty default="100" name="NODE_TRANSPARENCY">
+                <discreteMapping attributeName="node_type" attributeType="string">
+                    <discreteMappingEntry attributeValue="feature" value="200"/>
+                </discreteMapping>
+            </visualProperty>
+            <visualProperty default="255" name="NODE_LABEL_TRANSPARENCY"/>
+            <visualProperty default="C,C,c,0.00,0.00" name="NODE_CUSTOMGRAPHICS_POSITION_5"/>
+            <visualProperty default="C,C,c,0.00,0.00" name="NODE_CUSTOMGRAPHICS_POSITION_2"/>
+            <visualProperty default="false" name="NODE_SELECTED"/>
+            <visualProperty default="" name="NODE_TOOLTIP"/>
+            <visualProperty default="org.cytoscape.cg.model.NullCustomGraphics,0,[ Remove Graphics ]," name="NODE_CUSTOMGRAPHICS_8"/>
+            <visualProperty default="0.0" name="NODE_CUSTOMGRAPHICS_SIZE_1"/>
+            <visualProperty default="0.0" name="NODE_CUSTOMGRAPHICS_SIZE_7"/>
+            <visualProperty default="C,C,c,0.00,0.00" name="NODE_CUSTOMGRAPHICS_POSITION_3"/>
+            <visualProperty default="40.0" name="NODE_HEIGHT"/>
+            <visualProperty default="0.0" name="NODE_Y_LOCATION"/>
+            <visualProperty default="org.cytoscape.PieChart:{&quot;cy_range&quot;:[5.0,136.0],&quot;cy_colorScheme&quot;:&quot;Set3 colors&quot;,&quot;cy_colors&quot;:[&quot;#8DD3C7&quot;,&quot;#FFFFB3&quot;,&quot;#BEBADA&quot;,&quot;#FB8072&quot;,&quot;#80B1D3&quot;,&quot;#FDB462&quot;,&quot;#B3DE69&quot;,&quot;#FCCDE5&quot;,&quot;#D9D9D9&quot;,&quot;#BC80BD&quot;],&quot;cy_dataColumns&quot;:[&quot;feature_table__Branco-AcOEt-Final_10-09-2026.CDF Peak area&quot;,&quot;feature_table__CCA 100ul_10-09-2026.CDF Peak area&quot;,&quot;feature_table__CCV 100ul_10-09-2026.CDF Peak area&quot;,&quot;feature_table__lower_alkane_C&quot;,&quot;feature_table__MPP 100ul_10-09-2026.CDF Peak area&quot;,&quot;feature_table__MPRA 100ul_10-09-2026.CDF Peak area&quot;,&quot;feature_table__MPRL 100ul_10-09-2026.CDF Peak area&quot;,&quot;feature_table__MPRM 100ul_10-09-2026.CDF Peak area&quot;,&quot;feature_table__OPDI 100ul_10-09-2026.CDF Peak area&quot;,&quot;feature_table__OPDII 100ul_10-09-2026.CDF Peak area&quot;]}" name="NODE_CUSTOMGRAPHICS_1"/>
+            <visualProperty default="org.cytoscape.cg.model.NullCustomGraphics,0,[ Remove Graphics ]," name="NODE_CUSTOMGRAPHICS_3"/>
+            <visualProperty default="org.cytoscape.cg.model.NullCustomGraphics,0,[ Remove Graphics ]," name="NODE_CUSTOMGRAPHICS_9"/>
+            <visualProperty default="180.0" name="NODE_LABEL_WIDTH"/>
+            <visualProperty default="" name="NODE_LABEL">
+                <passthroughMapping attributeName="label" attributeType="string"/>
+            </visualProperty>
+            <visualProperty default="ROUND_RECTANGLE" name="COMPOUND_NODE_SHAPE"/>
+            <visualProperty default="0.0" name="NODE_CUSTOMGRAPHICS_SIZE_5"/>
+            <visualProperty default="C,C,c,0.00,0.00" name="NODE_CUSTOMGRAPHICS_POSITION_4"/>
+            <visualProperty default="C,C,c,0.00,0.00" name="NODE_CUSTOMGRAPHICS_POSITION_9"/>
+            <visualProperty default="C,C,c,0.00,0.00" name="NODE_CUSTOMGRAPHICS_POSITION_6"/>
+            <visualProperty default="NONE" name="NODE_LABEL_BACKGROUND_SHAPE"/>
+            <visualProperty default="C,C,c,0.00,0.00" name="NODE_LABEL_POSITION"/>
+        </node>
+        <edge>
+            <dependency value="true" name="arrowColorMatchesEdge"/>
+            <visualProperty default="0.5" name="EDGE_STACKING_DENSITY"/>
+            <visualProperty default="#FFFF00" name="EDGE_TARGET_ARROW_SELECTED_PAINT"/>
+            <visualProperty default="AUTO_BEND" name="EDGE_STACKING"/>
+            <visualProperty default="true" name="EDGE_VISIBLE"/>
+            <visualProperty default="false" name="EDGE_SELECTED"/>
+            <visualProperty name="EDGE_BEND"/>
+            <visualProperty default="#000000" name="EDGE_SOURCE_ARROW_UNSELECTED_PAINT"/>
+            <visualProperty default="255" name="EDGE_LABEL_TRANSPARENCY"/>
+            <visualProperty default="#A9B2BC" name="EDGE_STROKE_UNSELECTED_PAINT">
+                <discreteMapping attributeName="edge_type" attributeType="string">
+                    <discreteMappingEntry attributeValue="EI_library_match" value="#365DA8"/>
+                    <discreteMappingEntry attributeValue="EI_feature_similarity" value="#A9B2BC"/>
+                </discreteMapping>
+            </visualProperty>
+            <visualProperty default="NONE" name="EDGE_LABEL_BACKGROUND_SHAPE"/>
+            <visualProperty default="#000000" name="EDGE_TARGET_ARROW_UNSELECTED_PAINT"/>
+            <visualProperty default="SansSerif.plain,plain,10" name="EDGE_LABEL_FONT_FACE"/>
+            <visualProperty default="false" name="EDGE_LABEL_AUTOROTATE"/>
+            <visualProperty default="#A9B2BC" name="EDGE_UNSELECTED_PAINT">
+                <discreteMapping attributeName="edge_type" attributeType="string">
+                    <discreteMappingEntry attributeValue="EI_library_match" value="#365DA8"/>
+                    <discreteMappingEntry attributeValue="EI_feature_similarity" value="#A9B2BC"/>
+                </discreteMapping>
+            </visualProperty>
+            <visualProperty default="200.0" name="EDGE_LABEL_WIDTH"/>
+            <visualProperty default="1.0" name="EDGE_WIDTH">
+                <continuousMapping attributeName="cosine" attributeType="float">
+                    <continuousMappingPoint attrValue="0.65" equalValue="1.0" greaterValue="1.0" lesserValue="1.0"/>
+                    <continuousMappingPoint attrValue="0.8" equalValue="2.5" greaterValue="2.5" lesserValue="2.5"/>
+                    <continuousMappingPoint attrValue="0.95" equalValue="5.0" greaterValue="5.0" lesserValue="5.0"/>
+                </continuousMapping>
+            </visualProperty>
+            <visualProperty default="0.0" name="EDGE_Z_ORDER"/>
+            <visualProperty default="#000000" name="EDGE_LABEL_COLOR"/>
+            <visualProperty default="SOLID" name="EDGE_LINE_TYPE">
+                <discreteMapping attributeName="evidence_level" attributeType="string">
+                    <discreteMappingEntry attributeValue="weak / review" value="DOT"/>
+                    <discreteMappingEntry attributeValue="EI + RI tentative" value="SOLID"/>
+                    <discreteMappingEntry attributeValue="RI conflict / review" value="LONG_DASH"/>
+                    <discreteMappingEntry attributeValue="EI similarity only" value="SOLID"/>
+                    <discreteMappingEntry attributeValue="EI + RI concordant" value="SOLID"/>
+                </discreteMapping>
+            </visualProperty>
+            <visualProperty default="" name="EDGE_LABEL"/>
+            <visualProperty default="#FFCC00" name="EDGE_STROKE_SELECTED_PAINT"/>
+            <visualProperty default="#FFFF00" name="EDGE_SOURCE_ARROW_SELECTED_PAINT"/>
+            <visualProperty default="10" name="EDGE_LABEL_FONT_SIZE"/>
+            <visualProperty default="0.0" name="EDGE_LABEL_ROTATION"/>
+            <visualProperty default="255" name="EDGE_LABEL_BACKGROUND_TRANSPARENCY"/>
+            <visualProperty default="false" name="EDGE_CURVED"/>
+            <visualProperty default="#B6B6B6" name="EDGE_LABEL_BACKGROUND_COLOR"/>
+            <visualProperty default="NONE" name="EDGE_TARGET_ARROW_SHAPE"/>
+            <visualProperty default="NONE" name="EDGE_SOURCE_ARROW_SHAPE"/>
+            <visualProperty default="6.0" name="EDGE_TARGET_ARROW_SIZE"/>
+            <visualProperty default="C,C,c,0.00,0.00" name="EDGE_LABEL_POSITION"/>
+            <visualProperty default="6.0" name="EDGE_SOURCE_ARROW_SIZE"/>
+            <visualProperty default="" name="EDGE_TOOLTIP"/>
+            <visualProperty default="140" name="EDGE_TRANSPARENCY">
+                <discreteMapping attributeName="edge_type" attributeType="string">
+                    <discreteMappingEntry attributeValue="EI_library_match" value="190"/>
+                    <discreteMappingEntry attributeValue="EI_feature_similarity" value="75"/>
+                </discreteMapping>
+            </visualProperty>
+        </edge>
+    </visualStyle>
+</vizmap>
